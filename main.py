@@ -30,7 +30,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x, mouse_y = pygame.mouse.get.pos() # Проверка координат клика мышки на попадание в диапазон смайла-мишени
+            mouse_x, mouse_y = pygame.mouse.get_pos() # Проверка координат клика мышки на попадание в диапазон смайла-мишени
             if target_x < mouse_x < target_x + target_width and target_y < mouse_y < target_y + target_height:
                 # Рандомное обновление координат смайлика-мишени
                 target_x = random.randint(0, SCREEN_WIDTH - target_width)
