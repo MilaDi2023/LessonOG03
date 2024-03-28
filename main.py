@@ -41,6 +41,12 @@ target_x = random.randint(0, SCREEN_WIDTH - target_width)
 target_y = random.randint(0, SCREEN_HEIGHT - target_height)
 color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
+# Инициализация изображений кнопки
+start_button = pygame.image.load("Images/StartButton.png")
+start_button_large = pygame.transform.scale(start_button, (int(start_button.get_width() * 1.1),
+                                                           int(start_button.get_height() * 1.1)))
+
+
 
 # функция отображения начального экрана игры
 def display_start_screen():
@@ -64,11 +70,9 @@ def display_start_screen():
         screen.blit(welcome_text,
                     (SCREEN_WIDTH // 2 - welcome_text.get_width() // 2, vert_start + i * (font.get_linesize() + 5))
                     )
-
-    # Позиционирование кнопки "Начать игру"
+    # Установка положения кнопки "Начать игру"
     start_button_x = (SCREEN_WIDTH // 2) - start_button.get_width() // 2
-    start_button_y = (SCREEN_HEIGHT // 2) + welcome_text.get_height() // 2 + 70  # Увеличили значение по оси Y на 70
-    screen.blit(start_button, (start_button_x, start_button_y))
+    start_button_y = vert_start + len(welcome_texts) * (font.get_linesize() + 5) + 70
 
     pygame.display.flip()
 
@@ -77,15 +81,37 @@ def display_start_screen():
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                if (start_button_x < mouse_x < start_button_x + start_button.get_width()) and (
-                        start_button_y < mouse_y < start_button_y + start_button.get_height()):
-                    start_sound.stop()  # Остановка звука начала игры
-                    game_loop()  # Запуск игрового цикла
+                if (start_button_x < mouse_x < start_button_x + start_button_large.get_width()) and \
+                        (start_button_y < mouse_y < start_button_y + start_button_large.get_height()):
+                    start_sound.stop()  # остановка звука начала игры
+                    game_loop()  # запуск игрового цикла
                     return
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
 
+        # очистить экран перед отрисовкой кнопки
+        screen.fill((0, 0, 0))
+        screen.blit(background_image, (0, 0))  # загрузка фонового изображения
+
+        # отображение приветственного текста
+        for i, welcome_text in enumerate(welcome_texts):
+            screen.blit(welcome_text,
+                        (SCREEN_WIDTH // 2 - welcome_text.get_width() // 2, vert_start + i * (font.get_linesize() + 5))
+                        )
+
+        # Рисовать кнопку, увеличивая её при наведении
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if (start_button_x < mouse_x < start_button_x + start_button_large.get_width()) and \
+                (start_button_y < mouse_y < start_button_y + start_button_large.get_height()):
+            current_button = start_button_large
+            button_x = start_button_x - (start_button_large.get_width() - start_button.get_width()) // 2
+        else:
+            current_button = start_button
+            button_x = start_button_x
+
+        screen.blit(current_button, (button_x, start_button_y))
+        pygame.display.flip()
 
 def game_loop():
     global target_x, target_y
