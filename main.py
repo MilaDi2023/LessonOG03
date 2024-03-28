@@ -22,11 +22,10 @@ target_clicked_image = pygame.image.load("Images/smaylikIn.png")
 target_width = 80
 target_height = 80
 
-# Создаем событие USEREVENT
 MOVE_TARGET = pygame.USEREVENT + 1
-pygame.time.set_timer(MOVE_TARGET, 900) # Устанавливаем таймер на 900 мс
+pygame.time.set_timer(MOVE_TARGET, 900)
 
-font = pygame.font.Font(None, 32)
+font = pygame.font.Font(None, 36)
 
 target_x = random.randint(0, SCREEN_WIDTH - target_width)
 target_y = random.randint(0, SCREEN_HEIGHT - target_height)
@@ -39,6 +38,7 @@ def game_loop():
     user_score = 0
     smiley_score = 0
     running = True
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -65,6 +65,14 @@ def game_loop():
             screen.blit(target_image, (target_x, target_y))
         elif seconds >= 30:
             running = False
+            if user_score > smiley_score:
+                winner_text = font.render('Победил Охотник!', True, (0, 0, 0))
+            elif user_score < smiley_score:
+                winner_text = font.render('Победил Колобок!', True, (0, 0, 0))
+            else:
+                winner_text = font.render('Ничья!', True, (0, 0, 0))
+            screen.blit(winner_text, (SCREEN_WIDTH // 2 - winner_text.get_width() // 2, SCREEN_HEIGHT // 2 - winner_text.get_height() // 2 - 150))
+
             button = pygame.image.load("Images/ContinueButton.png")
             stop_button = pygame.image.load("Images/StopButton.png")
 
@@ -79,7 +87,6 @@ def game_loop():
             screen.blit(stop_button, (stop_button_x, stop_button_y))
         user_versus_smiley = font.render("Колобок против Охотника", True, (0, 0, 0))
         screen.blit(user_versus_smiley, ((SCREEN_WIDTH - user_versus_smiley.get_rect().width) // 2, 10))
-
         score_text = font.render("{0}:{1}".format(smiley_score, user_score), True, (0, 0, 0))
         screen.blit(score_text, ((SCREEN_WIDTH - score_text.get_rect().width) // 2, 60))
         pygame.display.flip()
