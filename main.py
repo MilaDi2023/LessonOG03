@@ -11,7 +11,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-pygame.display.set_caption("Игра Тир")
+pygame.display.set_caption('Игра "Убегающий колобок"')
 
 icon = pygame.image.load("Images/Target_icon.png")
 pygame.display.set_icon(icon)
@@ -19,14 +19,18 @@ pygame.display.set_icon(icon)
 target_image = pygame.image.load("Images/smaylik.png")
 target_clicked_image = pygame.image.load("Images/smaylikIn.png")
 
-font = pygame.font.Font(None, 40)
 target_width = 80
 target_height = 80
+
+# Создаем событие USEREVENT
+MOVE_TARGET = pygame.USEREVENT + 1
+pygame.time.set_timer(MOVE_TARGET, 900) # Устанавливаем таймер на 900 мс
+
+font = pygame.font.Font(None, 32)
 
 target_x = random.randint(0, SCREEN_WIDTH - target_width)
 target_y = random.randint(0, SCREEN_HEIGHT - target_height)
 color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-
 
 def game_loop():
     global target_x, target_y
@@ -40,6 +44,9 @@ def game_loop():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            if event.type == MOVE_TARGET:
+                target_x = random.randint(0, SCREEN_WIDTH - target_width)
+                target_y = random.randint(0, SCREEN_HEIGHT - target_height)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 seconds = (pygame.time.get_ticks() - start_ticks) / 1000
                 if seconds < 30:
@@ -49,13 +56,9 @@ def game_loop():
                         pygame.display.update()
                         sound.play()
                         user_score += 1
-                        time.sleep(1)
-                        target_x = random.randint(0, SCREEN_WIDTH - target_width)
-                        target_y = random.randint(0, SCREEN_HEIGHT - target_height)
+                        time.sleep(0.8)
                     else:
                         smiley_score += 1
-                        target_x = random.randint(0, SCREEN_WIDTH - target_width)
-                        target_y = random.randint(0, SCREEN_HEIGHT - target_height)
         screen.fill(color)
         seconds = (pygame.time.get_ticks() - start_ticks) / 1000
         if seconds < 30:
@@ -74,8 +77,11 @@ def game_loop():
 
             screen.blit(button, (button_x, button_y))
             screen.blit(stop_button, (stop_button_x, stop_button_y))
-        score_text = font.render("Юзер - Смайлик {0}:{1}".format(user_score, smiley_score), True, (0, 0, 0))
-        screen.blit(score_text, ((SCREEN_WIDTH - score_text.get_rect().width) // 2, 10))
+        user_versus_smiley = font.render("Колобок против Охотника", True, (0, 0, 0))
+        screen.blit(user_versus_smiley, ((SCREEN_WIDTH - user_versus_smiley.get_rect().width) // 2, 10))
+
+        score_text = font.render("{0}:{1}".format(smiley_score, user_score), True, (0, 0, 0))
+        screen.blit(score_text, ((SCREEN_WIDTH - score_text.get_rect().width) // 2, 60))
         pygame.display.flip()
 
         while not running:
@@ -89,7 +95,6 @@ def game_loop():
                             stop_button_y < mouse_y < stop_button_y + stop_button.get_height()):
                         pygame.quit()
                         quit()
-
 
 game_loop()
 pygame.quit()
