@@ -12,6 +12,7 @@ sound = pygame.mixer.Sound("Sounds/ooops.mp3")
 # Добавление звуковых файлов
 sound_game_won = pygame.mixer.Sound("Sounds/GameWon.mp3")
 sound_game_lost = pygame.mixer.Sound("Sounds/GameLost.mp3")
+sound_game_lost.set_volume(0.5) # 50% громкости
 sound_game_finished = pygame.mixer.Sound("Sounds/GameFinished.mp3")
 
 SCREEN_WIDTH = 800
@@ -54,16 +55,16 @@ def display_start_screen():
     screen.blit(background_image, (0, 0))  # загрузка фонового изображения
 
     # отображение приветственного текста
-    welcome_lines = ["Привет, Охотник!",
+    welcome_lines = [" ",
                      " ",
-                     "У тебя есть 30 секунд, чтобы поймать убегающего",
-                     "Колобка максимальное число раз.",
                      " ",
-                     "Поехали!"]
-    welcome_texts = [font.render(line, True, (255, 255, 255)) for line in welcome_lines]
+                     " ",
+                     " ",
+                     " "]
+    welcome_texts = [font.render(line, True, (249, 194, 33)) for line in welcome_lines]
 
     # Установка начальной точки для вертикального позиционирования первой строки приветственного текста
-    vert_start = SCREEN_HEIGHT // 2 - 155
+    vert_start = SCREEN_HEIGHT // 2 - 175
 
     # Вывод каждого ряда текста по центру, добавляя перерывы между строками
     for i, welcome_text in enumerate(welcome_texts):
@@ -72,7 +73,7 @@ def display_start_screen():
                     )
     # Установка положения кнопки "Начать игру"
     start_button_x = (SCREEN_WIDTH // 2) - start_button.get_width() // 2
-    start_button_y = vert_start + len(welcome_texts) * (font.get_linesize() + 5) + 70
+    start_button_y = vert_start + len(welcome_texts) * (font.get_linesize() + 5) + 130
 
     pygame.display.flip()
 
