@@ -1,3 +1,4 @@
+
 import pygame
 import random
 import time
@@ -6,6 +7,11 @@ pygame.init()
 pygame.mixer.init()
 
 sound = pygame.mixer.Sound("Sounds/ooops.mp3")
+
+# Добавление звуковых файлов
+sound_game_won = pygame.mixer.Sound("Sounds/GameWon.mp3")
+sound_game_lost = pygame.mixer.Sound("Sounds/GameLost.mp3")
+sound_game_finished = pygame.mixer.Sound("Sounds/GameFinished.mp3")
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -67,11 +73,16 @@ def game_loop():
             running = False
             if user_score > smiley_score:
                 winner_text = font.render('Победил Охотник!', True, (0, 0, 0))
+                screen.blit(winner_text, (SCREEN_WIDTH // 2 - winner_text.get_width() // 2, SCREEN_HEIGHT // 2 - winner_text.get_height() // 2 - 150))
+                sound_game_won.play() # проигрывание звука при победе пользователя
             elif user_score < smiley_score:
                 winner_text = font.render('Победил Колобок!', True, (0, 0, 0))
+                screen.blit(winner_text, (SCREEN_WIDTH // 2 - winner_text.get_width() // 2, SCREEN_HEIGHT // 2 - winner_text.get_height() // 2 - 150))
+                sound_game_lost.play() # проигрывание звука при проигрыше пользователя
             else:
                 winner_text = font.render('Ничья!', True, (0, 0, 0))
-            screen.blit(winner_text, (SCREEN_WIDTH // 2 - winner_text.get_width() // 2, SCREEN_HEIGHT // 2 - winner_text.get_height() // 2 - 150))
+                screen.blit(winner_text, (SCREEN_WIDTH // 2 - winner_text.get_width() // 2, SCREEN_HEIGHT // 2 - winner_text.get_height() // 2 - 150))
+                sound_game_finished.play() # проигрывание звука при ничьей
 
             button = pygame.image.load("Images/ContinueButton.png")
             stop_button = pygame.image.load("Images/StopButton.png")
