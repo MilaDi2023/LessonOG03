@@ -2,18 +2,30 @@ import pygame
 import random
 import time
 
+import sys
+import os
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+
 pygame.init()
 pygame.mixer.init()
 
 # Загрузка звука для начала игры
-start_sound = pygame.mixer.Sound("Sounds/StartGame.mp3")
-sound = pygame.mixer.Sound("Sounds/ooops.mp3")
+start_sound = pygame.mixer.Sound(resource_path("Sounds/StartGame.mp3"))
+sound = pygame.mixer.Sound(resource_path("Sounds/ooops.mp3"))
 
 # Добавление звуковых файлов
-sound_game_won = pygame.mixer.Sound("Sounds/GameWon.mp3")
-sound_game_lost = pygame.mixer.Sound("Sounds/GameLost.mp3")
+sound_game_won = pygame.mixer.Sound(resource_path("Sounds/GameWon.mp3"))
+sound_game_lost = pygame.mixer.Sound(resource_path("Sounds/GameLost.mp3"))
 sound_game_lost.set_volume(0.5) # 50% громкости
-sound_game_finished = pygame.mixer.Sound("Sounds/GameFinished.mp3")
+sound_game_finished = pygame.mixer.Sound(resource_path("Sounds/GameFinished.mp3"))
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -21,20 +33,20 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 pygame.display.set_caption('Игра "Убегающий колобок"')
 
-icon = pygame.image.load("Images/Target_icon.png")
+icon = pygame.image.load(resource_path("Images/Target_icon.png"))
 pygame.display.set_icon(icon)
 
-target_image = pygame.image.load("Images/smaylik.png")
-target_clicked_image = pygame.image.load("Images/smaylikIn.png")
+target_image = pygame.image.load(resource_path("Images/smaylik.png"))
+target_clicked_image = pygame.image.load(resource_path("Images/smaylikIn.png"))
 
-start_button = pygame.image.load("Images/StartButton.png")
-background_image = pygame.image.load("Images/BackgroundImage.png")
+start_button = pygame.image.load(resource_path("Images/StartButton.png"))
+background_image = pygame.image.load(resource_path("Images/BackgroundImage.png"))
 
 target_width = 80
 target_height = 80
 
 MOVE_TARGET = pygame.USEREVENT + 1
-pygame.time.set_timer(MOVE_TARGET, 900)
+pygame.time.set_timer(MOVE_TARGET, 700) # Тут меняем временнОй интервал, через который колобок убегает в другую точку экрана
 
 font = pygame.font.Font(None, 36)
 
@@ -43,7 +55,7 @@ target_y = random.randint(0, SCREEN_HEIGHT - target_height)
 color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
 # Инициализация изображений кнопки
-start_button = pygame.image.load("Images/StartButton.png")
+start_button = pygame.image.load(resource_path("Images/StartButton.png"))
 start_button_large = pygame.transform.scale(start_button, (int(start_button.get_width() * 1.1),
                                                            int(start_button.get_height() * 1.1)))
 
@@ -88,8 +100,8 @@ def display_start_screen():
                     game_loop()  # запуск игрового цикла
                     return
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                sys.exit()
+                sys.exit()
 
         # очистить экран перед отрисовкой кнопки
         screen.fill((0, 0, 0))
@@ -125,8 +137,8 @@ def game_loop():
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                sys.exit()
+                sys.exit()
             if event.type == MOVE_TARGET:
                 target_x = random.randint(0, SCREEN_WIDTH - target_width)
                 target_y = random.randint(0, SCREEN_HEIGHT - target_height)
@@ -139,7 +151,7 @@ def game_loop():
                         pygame.display.update()
                         sound.play()
                         user_score += 1
-                        time.sleep(0.8)
+                        time.sleep(0.7)
                     else:
                         smiley_score += 1
         screen.fill(color)
@@ -161,8 +173,8 @@ def game_loop():
                 screen.blit(winner_text, (SCREEN_WIDTH // 2 - winner_text.get_width() // 2, SCREEN_HEIGHT // 2 - winner_text.get_height() // 2 - 150))
                 sound_game_finished.play() # проигрывание звука при ничьей
 
-            button = pygame.image.load("Images/ContinueButton.png")
-            stop_button = pygame.image.load("Images/StopButton.png")
+            button = pygame.image.load(resource_path("Images/ContinueButton.png"))
+            stop_button = pygame.image.load(resource_path("Images/StopButton.png"))
 
             buttons_gap = 80
             button_x = (SCREEN_WIDTH // 2) - button.get_width() - buttons_gap // 2
@@ -188,11 +200,9 @@ def game_loop():
                         game_loop()
                     elif (stop_button_x < mouse_x < stop_button_x + stop_button.get_width()) and (
                             stop_button_y < mouse_y < stop_button_y + stop_button.get_height()):
-                        pygame.quit()
-                        quit()
+                        sys.exit()
+                        sys.exit()
 
-#game_loop()
-#pygame.quit()
 
 display_start_screen()
-pygame.quit()
+pygame.sys.exit()
