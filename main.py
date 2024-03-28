@@ -1,4 +1,3 @@
-
 import pygame
 import random
 import time
@@ -6,6 +5,8 @@ import time
 pygame.init()
 pygame.mixer.init()
 
+# Загрузка звука для начала игры
+start_sound = pygame.mixer.Sound("Sounds/StartGame.mp3")
 sound = pygame.mixer.Sound("Sounds/ooops.mp3")
 
 # Добавление звуковых файлов
@@ -25,6 +26,9 @@ pygame.display.set_icon(icon)
 target_image = pygame.image.load("Images/smaylik.png")
 target_clicked_image = pygame.image.load("Images/smaylikIn.png")
 
+start_button = pygame.image.load("Images/StartButton.png")
+background_image = pygame.image.load("Images/BackgroundImage.png")
+
 target_width = 80
 target_height = 80
 
@@ -36,6 +40,52 @@ font = pygame.font.Font(None, 36)
 target_x = random.randint(0, SCREEN_WIDTH - target_width)
 target_y = random.randint(0, SCREEN_HEIGHT - target_height)
 color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+
+
+# функция отображения начального экрана игры
+def display_start_screen():
+    start_sound.play()  # проигрывание звука начала игры
+    screen.blit(background_image, (0, 0))  # загрузка фонового изображения
+
+    # отображение приветственного текста
+    welcome_lines = ["Привет, Охотник!",
+                     " ",
+                     "У тебя есть 30 секунд, чтобы поймать убегающего",
+                     "Колобка максимальное число раз.",
+                     " ",
+                     "Поехали!"]
+    welcome_texts = [font.render(line, True, (255, 255, 255)) for line in welcome_lines]
+
+    # Установка начальной точки для вертикального позиционирования первой строки приветственного текста
+    vert_start = SCREEN_HEIGHT // 2 - 155
+
+    # Вывод каждого ряда текста по центру, добавляя перерывы между строками
+    for i, welcome_text in enumerate(welcome_texts):
+        screen.blit(welcome_text,
+                    (SCREEN_WIDTH // 2 - welcome_text.get_width() // 2, vert_start + i * (font.get_linesize() + 5))
+                    )
+
+    # Позиционирование кнопки "Начать игру"
+    start_button_x = (SCREEN_WIDTH // 2) - start_button.get_width() // 2
+    start_button_y = (SCREEN_HEIGHT // 2) + welcome_text.get_height() // 2 + 70  # Увеличили значение по оси Y на 70
+    screen.blit(start_button, (start_button_x, start_button_y))
+
+    pygame.display.flip()
+
+    # цикл ожидания нажатия на кнопку "Начать игру"
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                if (start_button_x < mouse_x < start_button_x + start_button.get_width()) and (
+                        start_button_y < mouse_y < start_button_y + start_button.get_height()):
+                    start_sound.stop()  # Остановка звука начала игры
+                    game_loop()  # Запуск игрового цикла
+                    return
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
 
 def game_loop():
     global target_x, target_y
@@ -114,5 +164,8 @@ def game_loop():
                         pygame.quit()
                         quit()
 
-game_loop()
+#game_loop()
+#pygame.quit()
+
+display_start_screen()
 pygame.quit()
